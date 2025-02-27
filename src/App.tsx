@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { hmFormat } from "./utilities/hmFormat";
 import { weekDays, months } from "./utilities/days-months";
+import addShift from "./utilities/api/addShift";
 
 interface CalcShiftProps {
   enter: string;
@@ -27,15 +28,7 @@ function App() {
   // onChange, update formData stAte
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // if (name !== "date") { // handle change for times only
-    //   let dateString = new Date(`${formData.date}T${value}:00`).toISOString();
-    //   // adjust date/time stamp to next day if passes midnight
-    //   if (name === "exit" && value < formData.enter) {
-    //     const exitDate = new Date(dateString);
-    //     exitDate.setDate(exitDate.getDate() + 1);
-    //     dateString = exitDate.toISOString();
-    //   }
-    // }
+
     setFormData((prev) => {
       const updatedFormData = { ...prev, [name]: value };
 
@@ -120,23 +113,26 @@ function App() {
     e.preventDefault();
 
     const enterTimestamp = new Date(`${formData.date}T${formData.enter}:00`).toISOString();
-    let exitTimestamp;
+    let exitTimestamp = new Date(`${formData.date}T${formData.exit}:00`).toISOString();
     // adjust date/time stamp to next day if passes midnight
     if (formData.exit < formData.enter) {
-      const exitDate = new Date(`${formData.date}T${formData.exit}:00`);
-      exitDate.setDate(exitDate.getDate() + 1);
-      exitTimestamp = exitDate.toISOString();
+      const exitDateObject = new Date(exitTimestamp)
+      exitTimestamp = new Date(exitDateObject.setDate(exitDateObject.getDate() + 1)).toISOString();
+    } else {
+     exitTimestamp = new Date(`${formData.date}T${formData.exit}:00`).toISOString();
     }
+    console.log(exitTimestamp);
 
-    const forDatabase = {
-      date: formData.date,
-      enterTimestamp: enterTimestamp,
-      exitTimestamp: exitTimestamp,
-      regularHours: total.regular,
-      nightHours: total.night,
-      totalHours: total.total,
+    const newShift = {
+      shift_date: formData.date,
+      enter: enterTimestamp,
+      exit: exitTimestamp,
+      regular_hours: total.regular,
+      night_hours: total.night,
+      total_hours: total.total,
     };
-    console.log(forDatabase);
+    console.log(newShift);
+    addShift(newShift);
   };
 
   return (
