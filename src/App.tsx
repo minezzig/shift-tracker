@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { hmFormat } from "./utilities/hmFormat";
 import { weekDays, months } from "./utilities/days-months";
-import addShift from "./utilities/api/addShift";
+import addShift from "./api/addShift";
+import getShifts from "./api/getShifts";
 
 interface CalcShiftProps {
   enter: string;
@@ -18,6 +19,7 @@ function App() {
     exit: "",
   });
   const [total, setTotal] = useState({ regular: 0, night: 0, total: 0 });
+  const [shifts, setShifts] = useState({});
 
   // date variables
   const today = new Date();
@@ -112,14 +114,22 @@ function App() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const enterTimestamp = new Date(`${formData.date}T${formData.enter}:00`).toISOString();
-    let exitTimestamp = new Date(`${formData.date}T${formData.exit}:00`).toISOString();
+    const enterTimestamp = new Date(
+      `${formData.date}T${formData.enter}:00`
+    ).toISOString();
+    let exitTimestamp = new Date(
+      `${formData.date}T${formData.exit}:00`
+    ).toISOString();
     // adjust date/time stamp to next day if passes midnight
     if (formData.exit < formData.enter) {
-      const exitDateObject = new Date(exitTimestamp)
-      exitTimestamp = new Date(exitDateObject.setDate(exitDateObject.getDate() + 1)).toISOString();
+      const exitDateObject = new Date(exitTimestamp);
+      exitTimestamp = new Date(
+        exitDateObject.setDate(exitDateObject.getDate() + 1)
+      ).toISOString();
     } else {
-     exitTimestamp = new Date(`${formData.date}T${formData.exit}:00`).toISOString();
+      exitTimestamp = new Date(
+        `${formData.date}T${formData.exit}:00`
+      ).toISOString();
     }
     console.log(exitTimestamp);
 
@@ -131,10 +141,15 @@ function App() {
       night_hours: total.night,
       total_hours: total.total,
     };
-    console.log(newShift);
-    addShift(newShift);
   };
 
+  const getShifties = async () => {
+    const shifties = await getShifts();
+    const total = shifties?.reduce((sum, item) => (sum += item.total_hours), 0);
+    console.log(total);
+  };
+
+  getShifties();
   return (
     <>
       <div className="flex items-center flex-col justify-center mt-20">
@@ -180,6 +195,7 @@ function App() {
             </div>
           )}
         </form>
+        {shifts.length && <div></div>}
       </div>
     </>
   );
