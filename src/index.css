@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@layer base {
+  input {
+    border: 3px solid blue;
+    border-radius:15px;
+    padding:5px;
+  }
+}
