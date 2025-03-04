@@ -2,8 +2,16 @@
 
 @layer base {
   input {
-    border: 3px solid blue;
+    border: 2px solid #05df72;
+    outline: 2px solid #05df72;
+    outline-offset: 1px;
     border-radius:15px;
     padding:5px;
+  }
+  button {
+    border-radius:10px;
+    background-color:#05df72;
+    color:white;
+    text-transform:uppercase;
   }
 }

@@ -1,12 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from "../utilities/supabaseClient";
 
 export default async function getShifts() {
   let { data: shifts, error } = await supabase.from("shifts").select("*");
 
-  return shifts;
+  if (error) {
+    console.error("Error fetching shfits:", error);
+    return [];
+  }
+  return shifts || [];
 }

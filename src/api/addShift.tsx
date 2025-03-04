@@ -1,9 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from "../utilities/supabaseClient";
 
 interface NewShiftType {
   shift_date: String;
@@ -14,7 +9,7 @@ interface NewShiftType {
   total_hours: Number;
 }
 
-export default async function addShift( newShift : NewShiftType) {
+export default async function addShift(newShift: NewShiftType) {
   const { data, error } = await supabase
     .from("shifts")
     .insert(newShift)

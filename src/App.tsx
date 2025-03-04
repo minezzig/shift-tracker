@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { hmFormat } from "./utilities/hmFormat";
 import { weekDays, months } from "./utilities/days-months";
 import addShift from "./api/addShift";
-import getShifts from "./api/getShifts";
 
 interface CalcShiftProps {
   enter: string;
@@ -141,18 +140,13 @@ function App() {
       night_hours: total.night,
       total_hours: total.total,
     };
+
+    addShift(newShift)
   };
 
-  const getShifties = async () => {
-    const shifties = await getShifts();
-    const total = shifties?.reduce((sum, item) => (sum += item.total_hours), 0);
-    console.log(total);
-  };
-
-  getShifties();
   return (
-    <>
-      <div className="flex items-center flex-col justify-center mt-20">
+    
+      <div className="flex justify-center h-full">
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="text-2xl">
             {weekDays[day]}, {date} de {months[month + 1]}
@@ -184,7 +178,7 @@ function App() {
               onChange={handleChange}
             />
           </div>
-          <button type="submit" className="border border-black p-3 w-full">
+          <button type="submit" className="border border-black p-3 w-full cursor-pointer">
             Ingresar turno
           </button>
           {total.total > 0 && (
@@ -195,9 +189,8 @@ function App() {
             </div>
           )}
         </form>
-        {shifts.length && <div></div>}
       </div>
-    </>
+  
   );
 }
 
