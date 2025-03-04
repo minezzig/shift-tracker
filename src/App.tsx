@@ -178,7 +178,7 @@ function App() {
               onChange={handleChange}
             />
           </div>
-          <button type="submit" className="border border-black p-3 w-full cursor-pointer">
+          <button type="submit" className="submit border border-black p-3 w-full cursor-pointer">
             Ingresar turno
           </button>
           {total.total > 0 && (

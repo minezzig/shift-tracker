@@ -8,9 +8,9 @@
     border-radius:15px;
     padding:5px;
   }
-  button {
+  .submit {
     border-radius:10px;
-    background-color:#05df72;
+    background-color:#05ef72;
     color:white;
     text-transform:uppercase;
   }

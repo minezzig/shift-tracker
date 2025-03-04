@@ -38,7 +38,7 @@ export default function NavBar() {
             onClick={() => setOpen(false)}
           >
             <User />
-            Profile
+            Perfil
           </Link>
         </li>
         <li className="ml-3">
@@ -48,7 +48,7 @@ export default function NavBar() {
             onClick={() => setOpen(false)}
           >
             <History />
-            History
+            Historia
           </Link>
         </li>
       </ul>
