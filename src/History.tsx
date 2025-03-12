@@ -51,73 +51,78 @@ export default function History() {
           onClickWeekNumber={handleWeek}
         />
       </div>
-      <div className="overflow-scroll mt-10">
-        <table className="">
-          <thead>
-            <tr>
-              <th className="font-bold bg-gray-500 text-white py-2"></th>
-              {filteredShifts.map((item, i) => (
-                <th
-                  key={i}
-                  className="font-bold bg-gray-500 text-white w-[100px] text-right pr-5"
-                >
-                  {weekDays[new Date(item.shift_date).getDay()].slice(0, 3)}
-                  <br />
-                  {item.shift_date.slice(8)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {["Regular", "Night", "Overnight", "Total"].map((category) => (
-              <tr key={category}>
-                <td className="font-bold bg-gray-500 text-white p-2">
-                  {category === "Regular" ? (
-                    <Sun />
-                  ) : category === "Night" ? (
-                    <Eclipse />
-                  ) : category === "Overnight" ? (
-                    <Moon />
-                  ) : (
-                    <Plus />
-                  )}
-                </td>
+      <div className="flex gap-1 my-5">
+        <Sun />
+        <span className="mr-3">8h-22h</span>
+        <Eclipse />
+        <span className="mr-3">22h-24h</span>
+        <Moon />
+        <span className="mr-3">24h-6h</span>
+      </div>
+      <div className="overflow-x-auto w-full">
+        {filteredShifts.length > 0 ? (
+          <table className="text-xs md:text-base">
+            <thead>
+              <tr>
+                <th className="font-bold bg-gray-500 text-white py-2"></th>
                 {filteredShifts.map((item, i) => (
-                  <td
+                  <th
                     key={i}
-                    className={`py-2 text-right pr-5 ${
-                      category === "Total" && "font-bold"
-                    }`}
+                    className="font-bold bg-gray-500 text-white w-[100px] text-right pr-5"
                   >
-                    {category === "Regular" && item.regular_hours}
-                    {category === "Night" && item.night_hours}
-                    {category === "Overnight" && item.overnight_hours}
-                    {category === "Total" && item.total_hours}
-                  </td>
+                    {weekDays[new Date(item.shift_date).getDay()].slice(0, 3)}
+                    <br />
+                    {item.shift_date.slice(8)}
+                  </th>
                 ))}
               </tr>
-            ))}
-            <tr className="font-bold text-right">
-              <td
-                className="text-right bg-green-400"
-                colSpan={shifts.length + 1}
-              >
-                Horas Semenales:{" "}
-                {filteredShifts
-                  ?.reduce((sum, item) => sum + item.total_hours, 0)
-                  .toFixed(2)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div className="flex gap-1">
-          <Sun />
-          <span className="mr-3">8h-22h</span>
-          <Eclipse />
-          <span className="mr-3">22h-24h</span>
-          <Moon />
-          <span className="mr-3">24h-6h</span>
-        </div>
+            </thead>
+            <tbody>
+              {["Regular", "Night", "Overnight", "Total"].map((category) => (
+                <tr key={category}>
+                  <td className="font-bold bg-gray-500 text-white p-2">
+                    {category === "Regular" ? (
+                      <Sun />
+                    ) : category === "Night" ? (
+                      <Eclipse />
+                    ) : category === "Overnight" ? (
+                      <Moon />
+                    ) : (
+                      <Plus />
+                    )}
+                  </td>
+                  {filteredShifts.map((item, i) => (
+                    <td
+                      key={i}
+                      className={`py-2 text-right pr-5 ${
+                        category === "Total" && "font-bold"
+                      }`}
+                    >
+                      {category === "Regular" && item.regular_hours.toFixed(2)}
+                      {category === "Night" && item.night_hours.toFixed(2)}
+                      {category === "Overnight" &&
+                        item.overnight_hours.toFixed(2)}
+                      {category === "Total" && item.total_hours.toFixed(2)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              <tr className="font-bold text-right">
+                <td
+                  className="text-right bg-green-400"
+                  colSpan={shifts.length + 1}
+                >
+                  Horas Semenales:{" "}
+                  {filteredShifts
+                    ?.reduce((sum, item) => sum + item.total_hours, 0)
+                    .toFixed(2)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        ) : (
+          <div>No has trabajado hoy</div>
+        )}
       </div>
     </div>
   );
