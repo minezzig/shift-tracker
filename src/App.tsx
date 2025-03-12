@@ -9,7 +9,8 @@ interface CalcShiftProps {
 }
 const FULL_DAY = 1440; // Total mins in a day (24 * 60)
 const NIGHT_START = 22 * 60; // 22:00 in minutes (1320)
-const NIGHT_END = 6 * 60; // 06:00 in minutes (360)
+const OVERNIGHT_START = 1440; // 24:00 in minutes (1440)
+const OVERNIGHT_END = 8 * 60; // 08:00 in minutes (480)
 
 function App() {
   const [formData, setFormData] = useState({
@@ -17,8 +18,7 @@ function App() {
     enter: "",
     exit: "",
   });
-  const [total, setTotal] = useState({ regular: 0, night: 0, total: 0 });
-  const [shifts, setShifts] = useState({});
+  const [total, setTotal] = useState({ regular: 0, night: 0, overnight: 0, total: 0 });
 
   // date variables
   const today = new Date();
@@ -41,71 +41,42 @@ function App() {
   };
 
   const calcShift = ({ enter, exit }: CalcShiftProps) => {
-    // if data missing
-    if (!enter || !exit) return;
     // turn string into hours and numbers with type number;
     const [enterHours, enterMinutes] = enter.split(":").map(Number);
     const [exitHours, exitMinutes] = exit.split(":").map(Number);
-
+    
     // convert to minutes
     const enterTotalMinutes = enterHours * 60 + enterMinutes;
     let exitTotalMinutes = exitHours * 60 + exitMinutes;
-
     // if the shift goes over midnight, add 24 hours
     if (exitTotalMinutes < enterTotalMinutes) exitTotalMinutes += FULL_DAY;
 
-    // calc general total minutes worked,
+    // calc general total minutes worked and set counters,
     let totalMinutesWorked = exitTotalMinutes - enterTotalMinutes;
-    let nightMinutes = 0;
-    let regularMinutes = 0;
+    let dayMins = 0;
+    let nightMins = 0;
+    let overnightMins = 0;
 
-    // all regular hours
-    if (enterTotalMinutes >= NIGHT_END && exitTotalMinutes <= NIGHT_START) {
-      regularMinutes = totalMinutesWorked;
-    }
-    // all night hours
-    else if (
-      enterTotalMinutes >= NIGHT_START &&
-      (exitTotalMinutes <= NIGHT_END ||
-        exitTotalMinutes <= NIGHT_END + FULL_DAY)
-    ) {
-      nightMinutes = totalMinutesWorked;
-    }
-    // both regular and night hours
-    else {
-      // regular hours
-      if (enterTotalMinutes < NIGHT_START) {
-        let regularEnd = Math.min(exitTotalMinutes, NIGHT_START);
-        regularMinutes = regularEnd - enterTotalMinutes;
-      }
-
-      // night hours
-      if (exitTotalMinutes > NIGHT_START) {
-        let nightStart = Math.max(enterTotalMinutes, NIGHT_START);
-        let nightEnd = Math.min(exitTotalMinutes, NIGHT_END + FULL_DAY);
-        nightMinutes = nightEnd - nightStart;
-        // add remainer wee morning hours to regular hours count
-        if (exitTotalMinutes > nightEnd)
-          regularMinutes += exitTotalMinutes - FULL_DAY - NIGHT_END;
-      }
-
-      // Night portion before 06:00
-      if (enterTotalMinutes < NIGHT_END) {
-        let nightStart = enterTotalMinutes;
-        let nightEnd = Math.min(exitTotalMinutes, NIGHT_END);
-        nightMinutes += nightEnd - nightStart;
-      }
+    // loop through minutes worked from start to finish, add to category if time falls within restraints
+    for(let time = enterTotalMinutes; time <= exitTotalMinutes; time++){
+      if(time > 0 && time < OVERNIGHT_END) overnightMins += 1
+      else if(time > OVERNIGHT_END && time < NIGHT_START) dayMins += 1
+      else if(time >= NIGHT_START && time < OVERNIGHT_START) nightMins += 1
+      else if(time > OVERNIGHT_START) overnightMins += 1
     }
 
     // calc decimal hours worked for each type, round to two decimals
-    const regularHoursWorked = Math.round((regularMinutes / 60) * 100) / 100;
-    const nightHoursWorked = Math.round((nightMinutes / 60) * 100) / 100;
+    const regularHoursWorked = Math.round((dayMins / 60) * 100) / 100;
+    const nightHoursWorked = Math.round((nightMins / 60) * 100) / 100;
+    const overnightHoursWorked = Math.round((overnightMins / 60) * 100) / 100;
     const hoursWorked = Math.round((totalMinutesWorked / 60) * 100) / 100;
 
+    // set state with each category of horus worked
     setTotal((prev) => ({
       ...prev,
       regular: regularHoursWorked,
       night: nightHoursWorked,
+      overnight: overnightHoursWorked,
       total: hoursWorked,
     }));
   };
@@ -113,31 +84,23 @@ function App() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const enterTimestamp = new Date(
-      `${formData.date}T${formData.enter}:00`
-    ).toISOString();
-    let exitTimestamp = new Date(
-      `${formData.date}T${formData.exit}:00`
-    ).toISOString();
+    const enterTimestamp = new Date(`${formData.date}T${formData.enter}:00`).toISOString();
+    let exitTimestamp = new Date(`${formData.date}T${formData.exit}:00`).toISOString();
     // adjust date/time stamp to next day if passes midnight
     if (formData.exit < formData.enter) {
       const exitDateObject = new Date(exitTimestamp);
-      exitTimestamp = new Date(
-        exitDateObject.setDate(exitDateObject.getDate() + 1)
-      ).toISOString();
-    } else {
-      exitTimestamp = new Date(
-        `${formData.date}T${formData.exit}:00`
-      ).toISOString();
+      exitDateObject.setDate(exitDateObject.getDate() + 1); 
+      exitTimestamp = exitDateObject.toISOString(); 
     }
-    console.log(exitTimestamp);
 
+    // create an newShift object to update database
     const newShift = {
       shift_date: formData.date,
       enter: enterTimestamp,
       exit: exitTimestamp,
       regular_hours: total.regular,
       night_hours: total.night,
+      overnight_hours: total.overnight,
       total_hours: total.total,
     };
 
@@ -185,6 +148,7 @@ function App() {
             <div>
               <h1>{hmFormat(total.regular)}</h1>
               <h1>{hmFormat(total.night)}</h1>
+              <h1>{hmFormat(total.overnight)}</h1>
               <h1 className="font-bold">{total.total}</h1>
             </div>
           )}
