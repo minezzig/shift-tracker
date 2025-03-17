@@ -63,7 +63,7 @@ export default function History() {
     try {
       const weekShifts = await getWeek(startDate, endDate);
       if (weekShifts) {
-        setFilteredShifts(weekShifts.reverse());
+        setFilteredShifts(weekShifts);
       }
     } catch (error) {
       console.error("error fetching shifts for the week: ", error);
@@ -130,8 +130,9 @@ export default function History() {
                     <td
                       key={i}
                       className={`text-center border border-green-300 ${
-                        category === "Total" && "font-bold"
-                      }`}
+                        category === "Total" && "font-bold text-sm"
+                      }
+                      ${(i === 5 || i === 6) && "bg-green-100"}`}
                     >
                       {category === "Regular" && item.regular_hours
                         ? item.regular_hours.toFixed(2)

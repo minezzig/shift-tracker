@@ -5,13 +5,27 @@
     border: 2px solid #05df72;
     outline: 2px solid #05df72;
     outline-offset: 1px;
-    border-radius:15px;
-    padding:5px;
+    border-radius: 15px;
+    padding: 5px;
   }
   .submit {
-    border-radius:10px;
-    background-color:#05ef72;
-    color:white;
-    text-transform:uppercase;
+    border-radius: 10px;
+    background-color: #05ef72;
+    color: white;
+    text-transform: uppercase;
+  }
+  .react-calendar__month-view__weekNumbers .react-calendar__tile {
+    background-color: grey !important;
+  }
+  .react-calendar__tile--now {
+    background: #76ffb8 !important;
+  }
+  .react-calendar__month-view__days__day--weekend {
+    background: rgb(243, 240, 240) !important;
+    color: grey !important;
+  }
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background-color: #cfcccc !important;
   }
 }
