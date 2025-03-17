@@ -133,10 +133,15 @@ export default function History() {
                         category === "Total" && "font-bold"
                       }`}
                     >
-                      {category === "Regular" && item.regular_hours.toFixed(2)}
-                      {category === "Night" && item.night_hours.toFixed(2)}
-                      {category === "Overnight" &&
-                        item.overnight_hours.toFixed(2)}
+                      {category === "Regular" && item.regular_hours
+                        ? item.regular_hours.toFixed(2)
+                        : ""}
+                      {category === "Night" && item.night_hours
+                        ? item.night_hours.toFixed(2)
+                        : ""}
+                      {category === "Overnight" && item.overnight_hours
+                        ? item.overnight_hours.toFixed(2)
+                        : ""}
                       {category === "Total" && item.total_hours.toFixed(2)}
                     </td>
                   ))}
