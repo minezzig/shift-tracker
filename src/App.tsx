@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { hmFormat } from "./utilities/hmFormat";
 import { weekDays, months } from "./utilities/days-months";
 import addShift from "./api/addShift";
+import Success from "./Success";
 
 interface CalcShiftProps {
   enter: string;
@@ -28,6 +29,7 @@ function App() {
     overnight: 0,
     total: 0,
   });
+  const [success, setSuccess] = useState(false);
 
   // date variables
   const today = new Date();
@@ -95,19 +97,22 @@ function App() {
   };
 
   const validate = () => {
+
     if (!formData.enter) {
       setErrors((prev) => ({ ...prev, enter: true }));
     }
     if (!formData.exit) {
       setErrors((prev) => ({ ...prev, exit: true }));
     }
-
+    // will return true if there is any error
     return errors.enter || errors.exit
   }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(!validate()) return;
+    // if there any validation errors, will not submit
+    if(validate()) return;
 
     const enterTimestamp = new Date(
       `${formData.date}T${formData.enter}:00`
@@ -133,7 +138,11 @@ function App() {
       total_hours: total.total,
     };
 
+    // add shift to database
     addShift(newShift);
+    // open modal
+    setSuccess(true);
+    // reset form data
     setFormData({
       date: new Date().toISOString().slice(0, 10),
       enter: "",
@@ -186,15 +195,9 @@ function App() {
         >
           Ingresar turno
         </button>
-        {total.total > 0 && (
-          <div>
-            <h1>{hmFormat(total.regular)}</h1>
-            <h1>{hmFormat(total.night)}</h1>
-            <h1>{hmFormat(total.overnight)}</h1>
-            <h1 className="font-bold">{total.total}</h1>
-          </div>
-        )}
+
       </form>
+      {success && <Success setSuccess={setSuccess} total={total.total}/>}
     </div>
   );
 }
