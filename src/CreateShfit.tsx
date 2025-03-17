@@ -60,7 +60,6 @@ export default function CreateShfit() {
     if (exitTotalMinutes < enterTotalMinutes) exitTotalMinutes += FULL_DAY;
 
     // calc general total minutes worked and set counters,
-    let totalMinutesWorked = exitTotalMinutes - enterTotalMinutes;
     let dayMins = 0;
     let nightMins = 0;
     let overnightMins = 0;
@@ -77,7 +76,8 @@ export default function CreateShfit() {
     const regularHoursWorked = Math.round((dayMins / 60) * 100) / 100;
     const nightHoursWorked = Math.round((nightMins / 60) * 100) / 100;
     const overnightHoursWorked = Math.round((overnightMins / 60) * 100) / 100;
-    const hoursWorked = regularHoursWorked + nightHoursWorked + overnightHoursWorked;
+    const hoursWorked = Math.round((regularHoursWorked + nightHoursWorked + overnightHoursWorked) * 100) / 100;
+
 
     // set state with each category of horus worked
     setTotal((prev) => ({

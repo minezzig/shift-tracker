@@ -80,21 +80,21 @@ export default function History() {
           onClickWeekNumber={handleWeek}
         />
       </div>
-      <div className="flex gap-1 my-5">
+      <div className="flex gap-1 my-5 items-center">
         <Sun />
-        <span className="mr-3">8h-22h</span>
+        <span className="mr-3 text-xs">8h-22h</span>
         <Eclipse />
-        <span className="mr-3">22h-24h</span>
+        <span className="mr-3 text-xs">22h-24h</span>
         <Moon />
-        <span className="mr-3">24h-6h</span>
+        <span className="mr-3 text-xs">24h-6h</span>
       </div>
-      <div className="overflow-x-auto w-full flex items-center justify-center">
+      <div className="overflow-x-auto m-3 flex items-center justify-center">
         {filteredShifts.length > 0 ? (
           <table className="text-xs md:text-base">
             <thead>
               <tr>
                 <th className="font-bold bg-gray-500 text-white py-2"></th>
-                {filteredShifts.map((item, i) => (
+                {filteredShifts.reverse().map((item, i) => (
                   <th
                     key={i}
                     className="font-bold bg-gray-500 text-white w-[100px]"
@@ -142,7 +142,9 @@ export default function History() {
                       {category === "Overnight" && item.overnight_hours
                         ? item.overnight_hours.toFixed(2)
                         : ""}
-                      {category === "Total" && item.total_hours.toFixed(2)}
+                      {category === "Total" && item.total_hours
+                        ? item.total_hours.toFixed(2)
+                        : ""}
                     </td>
                   ))}
                 </tr>
