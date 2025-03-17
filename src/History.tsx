@@ -94,7 +94,7 @@ export default function History() {
             <thead>
               <tr>
                 <th className="font-bold bg-gray-500 text-white py-2"></th>
-                {filteredShifts.reverse().map((item, i) => (
+                {filteredShifts.map((item, i) => (
                   <th
                     key={i}
                     className="font-bold bg-gray-500 text-white w-[100px]"

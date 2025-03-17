@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { hmFormat } from "./utilities/hmFormat";
 import addShift from "./api/addShift";
 import Success from "./Success";
 
