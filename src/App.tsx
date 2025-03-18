@@ -13,14 +13,14 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is logged in when the home page is visited
+   // check if user logged in - if not, redirect to login page
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
-        // If no session (not logged in), redirect to login page
         navigate("/login");
       }
     });
-  }, [navigate]);
+  }, []);
+  
   // date variables
   const today = new Date();
   const day = today.getDay();
