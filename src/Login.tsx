@@ -42,7 +42,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center bg-green-200 min-h-screen">
       {!session ? (
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
+        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }}  providers={[]}/>
       ) : (
         <div>Logged in</div>
       )}
