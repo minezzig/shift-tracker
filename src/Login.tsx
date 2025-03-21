@@ -1,19 +1,17 @@
 import "./index.css";
 import { useState, useEffect } from "react";
-import { createClient, Session } from "@supabase/supabase-js";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { Session } from "@supabase/supabase-js";
 import { useNavigate } from "react-router";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL!;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from "./utilities/supabaseClient";
 
 export default function Login() {
   const [session, setSession] = useState<Session | null>(null);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<String | null>(null);
   const navigate = useNavigate();
-
-  // get the user info
+  
+  // get the user session
   useEffect(() => {
     supabase.auth
       .getSession()
@@ -22,29 +20,71 @@ export default function Login() {
       })
       .catch((error) => console.error("Error getting session:", error));
 
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
-    return () => subscription?.unsubscribe(); 
+    return () => subscription?.unsubscribe();
   }, []);
 
   // if there is a user logged in, go to main page
   useEffect(() => {
     if (session) {
-      navigate("/"); 
+      navigate("/");
     }
-  }, [session, navigate]);
+  }, [session]);
+
+  // on input change, make copy of object with new info
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // control what happens when user submits form to login - send email and password to supabase
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) {
+      console.error("Login failed:", error.message);
+      setError(error.message);
+    } else {
+      console.log("Logged in!", data);
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="flex items-center justify-center bg-green-200 min-h-screen">
-      {!session ? (
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }}  providers={[]}/>
-      ) : (
-        <div>Logged in</div>
+      {!session && (
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+          <a href="/signup">Sign up</a>
+          {error && <p className="text-red-500">{error}</p>}
+        </form>
       )}
     </div>
   );

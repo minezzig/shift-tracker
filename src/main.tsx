@@ -7,6 +7,7 @@ import Layout from "./Layout.tsx";
 import Profile from "./Profile.tsx";
 import History from "./History.tsx";
 import Login from "./Login.tsx";
+import Signup from "./Signup.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="history" element={<History />} />
         </Route>
         <Route path="/login" element={<Login />}/>
+        <Route path="/signup" element={<Signup />}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>
