@@ -6,14 +6,22 @@ interface NewShiftType {
   exit: String;
   regular_hours: Number;
   night_hours: Number;
+  overnight_hours: Number;
   total_hours: Number;
 }
 
 export default async function addShift(newShift: NewShiftType) {
-  const { data, error } = await supabase
-    .from("shifts")
-    .insert(newShift)
-    .select();
+  try {
+    const { data, error } = await supabase
+      .from("test")
+      .insert(newShift)
+      .select();
 
-  return { data, error };
+    if (error) throw error;
+
+    return { data, error: null };
+  } catch (error) {
+    console.error("addShift error:", error);
+    return { data: null, error };
+  }
 }

@@ -52,6 +52,9 @@ export default function CreateShfit() {
     const [enterHours, enterMinutes] = enter.split(":").map(Number);
     const [exitHours, exitMinutes] = exit.split(":").map(Number);
 
+    console.log("hours", enterHours, "minutes", enterMinutes);
+    console.log("hours", exitHours, "minutes", exitMinutes);
+
     // convert to minutes
     const enterTotalMinutes = enterHours * 60 + enterMinutes;
     let exitTotalMinutes = exitHours * 60 + exitMinutes;
@@ -64,27 +67,49 @@ export default function CreateShfit() {
     let overnightMins = 0;
 
     // loop through minutes worked from start to finish, add to category if time falls within restraints
-    for (let time = enterTotalMinutes; time <= exitTotalMinutes; time++) {
+    for (let time = enterTotalMinutes; time < exitTotalMinutes; time++) {
       if (time > 0 && time < OVERNIGHT_END) overnightMins += 1;
-      else if (time > OVERNIGHT_END && time < NIGHT_START) dayMins += 1;
+      else if (time >= OVERNIGHT_END && time < NIGHT_START) dayMins += 1;
       else if (time >= NIGHT_START && time < OVERNIGHT_START) nightMins += 1;
-      else if (time > OVERNIGHT_START) overnightMins += 1;
+      else if (time >= OVERNIGHT_START) overnightMins += 1;
     }
+    console.log(dayMins, nightMins, overnightMins);
+    // calc decimal hours worked for each type
+    const regularHoursWorked = dayMins / 60;
+    const nightHoursWorked = nightMins / 60;
+    const overnightHoursWorked = overnightMins / 60;
 
-    // calc decimal hours worked for each type, round to two decimals
-    const regularHoursWorked = Math.round((dayMins / 60) * 100) / 100;
-    const nightHoursWorked = Math.round((nightMins / 60) * 100) / 100;
-    const overnightHoursWorked = Math.round((overnightMins / 60) * 100) / 100;
-    const hoursWorked = Math.round((regularHoursWorked + nightHoursWorked + overnightHoursWorked) * 100) / 100;
+    // Round each category to two decimal places AFTER to ensure correct calcs
+    const roundedRegularHoursWorked =
+      Math.round(regularHoursWorked * 100) / 100;
+    const roundedNightHoursWorked = Math.round(nightHoursWorked * 100) / 100;
+    const roundedOvernightHoursWorked =
+      Math.round(overnightHoursWorked * 100) / 100;
+    // calc full total hours worked
+    const hoursWorked =
+      regularHoursWorked + nightHoursWorked + overnightHoursWorked;
+    const roundedHoursWorked = Math.round(hoursWorked * 100) / 100;
 
+    console.log(
+      "regular",
+      regularHoursWorked,
+      nightHoursWorked,
+      overnightHoursWorked
+    );
+    console.log(
+      "rounded",
+      roundedRegularHoursWorked,
+      roundedNightHoursWorked,
+      roundedOvernightHoursWorked
+    );
 
     // set state with each category of horus worked
     setTotal((prev) => ({
       ...prev,
-      regular: regularHoursWorked,
-      night: nightHoursWorked,
-      overnight: overnightHoursWorked,
-      total: hoursWorked,
+      regular: roundedRegularHoursWorked,
+      night: roundedNightHoursWorked,
+      overnight: roundedOvernightHoursWorked,
+      total: roundedHoursWorked,
     }));
   };
 
@@ -99,7 +124,7 @@ export default function CreateShfit() {
     return errors.enter || errors.exit;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // if there any validation errors, will not submit
@@ -120,7 +145,7 @@ export default function CreateShfit() {
 
     // create an newShift object to update database
     const newShift = {
-      shift_date: formData.date,
+      shift_date: new Date(formData.date),
       enter: enterTimestamp,
       exit: exitTimestamp,
       regular_hours: total.regular,
@@ -130,9 +155,20 @@ export default function CreateShfit() {
     };
 
     // add shift to database
-    addShift(newShift);
+    try {
+      const { data, error } = await addShift(newShift);
+      if (error) {
+        console.log("Shift add failed:", error);
+      } else {
+        console.log("Shift added:", data);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+
     // open modal
     setSuccess(true);
+    
     // reset form data
     setFormData({
       date: new Date().toISOString().slice(0, 10),
@@ -143,7 +179,6 @@ export default function CreateShfit() {
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-3">
-        
         <div className="flex flex-col relative">
           <label htmlFor="enter">Entrar</label>
           <input

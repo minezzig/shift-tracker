@@ -2,7 +2,7 @@ import { supabase } from "../utilities/supabaseClient";
 export async function getShiftsByDate(date: string) {
   try {
     const { data, error } = await supabase
-      .from("shifts") 
+      .from("test") 
       .select("*")
       .eq("shift_date", date); 
 
