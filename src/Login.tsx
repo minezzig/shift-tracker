@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Session } from "@supabase/supabase-js";
 import { useNavigate } from "react-router";
 import { supabase } from "./utilities/supabaseClient";
+import { useUser } from "./UserContext";
 
 export default function Login() {
   const [session, setSession] = useState<Session | null>(null);
@@ -10,7 +11,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
   const navigate = useNavigate();
-  
+
+  // get the setUser function
+  const { setUser } = useUser();
+
   // get the user session
   useEffect(() => {
     supabase.auth
@@ -24,10 +28,14 @@ export default function Login() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      // if we have a session, set the userData
+      if (session) {
+        setUser(session.user);
+      }
     });
 
     return () => subscription?.unsubscribe();
-  }, []);
+  }, [setUser]);
 
   // if there is a user logged in, go to main page
   useEffect(() => {
@@ -55,6 +63,8 @@ export default function Login() {
       setError(error.message);
     } else {
       console.log("Logged in!", data);
+      // update userData on login
+      setUser(data.user);
     }
     setLoading(false);
   };

@@ -26,6 +26,7 @@ function App() {
   const day = today.getDay();
   const date = today.getDate();
   const month = today.getMonth();
+
   return (
     <div className="flex h-full items-center flex-col">
       <div className="text-2xl">

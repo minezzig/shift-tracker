@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { supabase } from "./utilities/supabaseClient";
 import { useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 
 interface UserData {
   id: string;
@@ -8,26 +9,8 @@ interface UserData {
   name: string;
 }
 export default function Profile() {
-  const [user, setUser] = useState<UserData | null>(null);
+  const { user } = useUser();
   const navigate = useNavigate();
-
-  //get user on load
-  useEffect(() => {
-    async function getUserData(){
-      const { data, error } = await supabase.auth.getUser();
-    
-      if (error) {
-        console.error("Error fetching user:", error);
-        return;
-      }
-      setUser({
-        id: data.user.id,
-        name: data.user.user_metadata.display_name,
-        email: data.user.user_metadata.email
-      })
-    }
-    getUserData();
-  }, [])
   
   // sign out and be directed to home...sent to login
   async function signOut() {
@@ -42,7 +25,7 @@ export default function Profile() {
   return (
     <div>
       <div>Profile</div>
-      <div>{user?.name}</div>
+      <div>{user?.user_metadata.display_name}</div>
       <div>{user?.email}</div>
       <button
         onClick={signOut}

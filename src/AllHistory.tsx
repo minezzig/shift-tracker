@@ -3,8 +3,10 @@ import getShifts from "./api/getShifts";
 import { formatTime } from "./utilities/formatTime";
 import { Eclipse, Edit, Edit2, Moon, Sun, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useUser } from "./UserContext";
 
 interface Shift {
+  id: number;
   shift_date: string;
   enter: string;
   exit: string;
@@ -12,24 +14,23 @@ interface Shift {
   night_hours: number;
   overnight_hours: number;
   total_hours: number;
-  id: number;
+  user_id: string;
 }
 
 export default function AllHistory() {
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const { user } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchShifts() {
-      try {
-        const data = await getShifts();
+    if (user) {
+      async function fetchShifts() {
+        const data = await getShifts(user);
         setShifts(data ?? []);
-      } catch (error) {
-        console.log(error);
       }
+      fetchShifts();
     }
-    fetchShifts();
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center">

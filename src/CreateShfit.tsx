@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import addShift from "./api/addShift";
 import Success from "./Success";
+import { useUser } from "./UserContext";
 
 interface CalcShiftProps {
   enter: string;
@@ -28,6 +29,7 @@ export default function CreateShfit() {
     total: 0,
   });
   const [success, setSuccess] = useState(false);
+  const {user} = useUser();
 
   // onChange, update formData stAte
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,9 +54,6 @@ export default function CreateShfit() {
     const [enterHours, enterMinutes] = enter.split(":").map(Number);
     const [exitHours, exitMinutes] = exit.split(":").map(Number);
 
-    console.log("hours", enterHours, "minutes", enterMinutes);
-    console.log("hours", exitHours, "minutes", exitMinutes);
-
     // convert to minutes
     const enterTotalMinutes = enterHours * 60 + enterMinutes;
     let exitTotalMinutes = exitHours * 60 + exitMinutes;
@@ -73,7 +72,7 @@ export default function CreateShfit() {
       else if (time >= NIGHT_START && time < OVERNIGHT_START) nightMins += 1;
       else if (time >= OVERNIGHT_START) overnightMins += 1;
     }
-    console.log(dayMins, nightMins, overnightMins);
+ 
     // calc decimal hours worked for each type
     const regularHoursWorked = dayMins / 60;
     const nightHoursWorked = nightMins / 60;
@@ -89,19 +88,6 @@ export default function CreateShfit() {
     const hoursWorked =
       regularHoursWorked + nightHoursWorked + overnightHoursWorked;
     const roundedHoursWorked = Math.round(hoursWorked * 100) / 100;
-
-    console.log(
-      "regular",
-      regularHoursWorked,
-      nightHoursWorked,
-      overnightHoursWorked
-    );
-    console.log(
-      "rounded",
-      roundedRegularHoursWorked,
-      roundedNightHoursWorked,
-      roundedOvernightHoursWorked
-    );
 
     // set state with each category of horus worked
     setTotal((prev) => ({
@@ -152,6 +138,7 @@ export default function CreateShfit() {
       night_hours: total.night,
       overnight_hours: total.overnight,
       total_hours: total.total,
+      user_id: user.id
     };
 
     // add shift to database

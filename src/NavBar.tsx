@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
-
+  
   return (
     <div className="bg-gray-500 w-full p-5 z-10">
       <div className="flex items-center justify-between">

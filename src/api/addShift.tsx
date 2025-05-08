@@ -8,6 +8,7 @@ interface NewShiftType {
   night_hours: Number;
   overnight_hours: Number;
   total_hours: Number;
+  user_id: String
 }
 
 export default async function addShift(newShift: NewShiftType) {
