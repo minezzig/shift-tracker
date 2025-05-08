@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import getShiftById from "./api/getShift";
 import { useEffect, useState } from "react";
+import { formatTime } from "./utilities/formatTime";
 
 type Shift = {
   shift_date: string;
@@ -36,16 +37,10 @@ export default function HistoryDetail() {
         <div>
           <p>shift_date: {shift.shift_date.split("T")[0]}</p>
           <p>enter:{" "}
-            {new Intl.DateTimeFormat("es-ES", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }).format(new Date(shift.enter))}</p>
+            {formatTime(shift.enter)}</p>
           <p>
             exit:{" "}
-            {new Intl.DateTimeFormat("es-ES", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }).format(new Date(shift.exit))}
+            {formatTime(shift.exit)}
           </p>
           <p>regular_hours: {shift.regular_hours}</p>
           <p>night_hours: {shift.night_hours} </p>

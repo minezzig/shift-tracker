@@ -50,7 +50,8 @@ export default function History() {
 
   const handleClickDay = async (value: any) => {
     setView("day");
-    const selectedDate = format(value, "yyyy-MM-dd");
+    console.log(value)
+    const selectedDate = format(value, "yyyy-MM-dd") + "T00:00:00.000Z";
 
     try {
       const dayShifts = await getShiftsByDate(selectedDate);
@@ -89,7 +90,7 @@ export default function History() {
   return (
     <div className="flex flex-col items-center">
       <h1>History</h1>
-      {console.log((new Date(filteredShifts.at(-1)?.enter)).toLocaleString())}
+      <a href="/history/all">Show All History</a>
       <div className="">
         <Calendar
           onChange={handleClickDay}

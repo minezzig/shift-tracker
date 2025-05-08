@@ -9,6 +9,7 @@ import History from "./History.tsx";
 import Login from "./Login.tsx";
 import Signup from "./Signup.tsx";
 import HistoryDetail from "./HistoryDetail.tsx";
+import AllHistory from "./AllHistory.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<App />} />
           <Route path="profile" element={<Profile />} />
           <Route path="history" element={<History />} />
+          <Route path="history/all" element={<AllHistory />} />
           <Route path="history/:id" element={<HistoryDetail />} />
         </Route>
         <Route path="/login" element={<Login />} />
