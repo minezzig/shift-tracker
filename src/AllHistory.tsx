@@ -33,18 +33,29 @@ export default function AllHistory() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1>AllHistory</h1>
-      <div className="border border-black  m-5 text-[10px]">
-        <div className="grid grid-cols-7 text-center font-bold bg-gray-100 p-2">
-          <div>Fecha</div>
-          <div>Entrada</div>
-          <div>Salida</div>
-          <div className="m-auto">
-            <Sun className="size-4"/>
+      <div className="flex gap-1 my-5 items-center">
+        <Sun />
+        <span className="mr-3 text-xs">8h-22h</span>
+        <Eclipse />
+        <span className="mr-3 text-xs">22h-24h</span>
+        <Moon />
+        <span className="mr-3 text-xs">24h-8h</span>
+      </div>
+      <div className="border border-black text-[10px] md:text-sm md:w-full md:max-w-[800px]">
+        <div className="grid grid-cols-7 font-bold bg-gray-100">
+          <div className="border p-1 text-center">Fecha</div>
+          <div className="border p-1 text-center">Entrada</div>
+          <div className="border p-1 text-center">Salida</div>
+          <div className="border p-1 text-center">
+            <Sun className="size-4 m-auto" />
           </div>
-          <div className="m-auto"><Eclipse className="size-4"/></div>
-          <div className="m-auto"><Moon className="size-4" /></div>
-          <div>Totales</div>
+          <div className="border p-1">
+            <Eclipse className="size-4 m-auto" />
+          </div>
+          <div className="border p-1">
+            <Moon className="size-4 m-auto" />
+          </div>
+          <div className="border p-1 text-center">Total</div>
         </div>
 
         {shifts.map((shift, index) => (
@@ -89,14 +100,6 @@ export default function AllHistory() {
               .toFixed(2)}
           </div>
         </div>
-      </div>
-      <div className="flex gap-1 my-5 items-center">
-        <Sun />
-        <span className="mr-3 text-xs">8h-22h</span>
-        <Eclipse />
-        <span className="mr-3 text-xs">22h-24h</span>
-        <Moon />
-        <span className="mr-3 text-xs">24h-8h</span>
       </div>
     </div>
   );
