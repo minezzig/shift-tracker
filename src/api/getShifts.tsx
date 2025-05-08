@@ -4,7 +4,7 @@ import { supabase } from "../utilities/supabaseClient";
 
 export default async function getShifts(user: User) {
   let { data, error } = await supabase
-    .from("test")
+    .from("shifts")
     .select("*")
     .eq("user_id", user.id);
 

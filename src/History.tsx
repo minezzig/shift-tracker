@@ -22,7 +22,7 @@ type Shift = {
 
 export default function History() {
   const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
-  const [view, setView] = useState<"week" | "day" | "">("");
+  const [view, setView] = useState<"week" | "day" | "">("week");
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -167,15 +167,47 @@ export default function History() {
                 </tr>
               ))}
               {view === "week" && (
-                <tr className="font-bold text-right">
+                <tr className="font-bold  bg-green-400">
+                  <td></td>
+                  <td>
+                    <div className="flex flex-col items-center justify-center">
+                      <div>Día</div>
+                      <div>
+                        {filteredShifts
+                          ?.reduce((sum, item) => sum + item.regular_hours, 0)
+                          .toFixed(2)}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex flex-col items-center justify-center">
+                      <div>Noche</div>
+                      <div>
+                        {filteredShifts
+                          ?.reduce((sum, item) => sum + item.night_hours, 0)
+                          .toFixed(2)}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex flex-col items-center justify-center">
+                      <div>Transnoche</div>
+                      <div>
+                        {filteredShifts
+                          ?.reduce((sum, item) => sum + item.overnight_hours, 0)
+                          .toFixed(2)}
+                      </div>
+                    </div>
+                  </td>
                   <td
-                    className="text-right bg-green-400"
-                    colSpan={filteredShifts.length + 1}
+                    className="flex flex-col items-center justify-center"
                   >
-                    Horas Semenales:{" "}
-                    {filteredShifts
-                      ?.reduce((sum, item) => sum + item.total_hours, 0)
-                      .toFixed(2)}
+                   <div>Total</div>
+                      <div>
+                        {filteredShifts
+                          ?.reduce((sum, item) => sum + item.total_hours, 0)
+                          .toFixed(2)}
+                      </div>
                   </td>
                 </tr>
               )}
