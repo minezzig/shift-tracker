@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import getShifts from "./api/getShifts";
 import { formatTime } from "./utilities/formatTime";
-import { Eclipse, Edit, Edit2, Moon, Sun, Trash2 } from "lucide-react";
+import { Eclipse, Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useUser } from "./UserContext";
 
@@ -25,9 +25,8 @@ export default function AllHistory() {
   useEffect(() => {
     if (user) {
       async function fetchShifts() {
-        let data = await getShifts(user);
-        data = data.reverse();
-        setShifts(data ?? []);
+        const data = await getShifts(user);
+        setShifts(data?.reverse() ?? []);
       }
       fetchShifts();
     }

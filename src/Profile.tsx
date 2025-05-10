@@ -1,13 +1,7 @@
 import { useNavigate } from "react-router";
 import { supabase } from "./utilities/supabaseClient";
-import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 
-interface UserData {
-  id: string;
-  email: string;
-  name: string;
-}
 export default function Profile() {
   const { user } = useUser();
   const navigate = useNavigate();

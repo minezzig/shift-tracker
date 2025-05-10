@@ -17,6 +17,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if(data?.session?.user) {
         // rehydrate context
         setUser(data.session.user)
+      } else {
+        console.log(error);
       }
     };
     getUser();

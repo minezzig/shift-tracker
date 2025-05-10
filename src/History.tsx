@@ -66,7 +66,7 @@ export default function History() {
     setView("week");
     const startDate = format(date, "yyyy-MM-dd");
     const endDate = format(addDays(date, 6), "yyyy-MM-dd");
-
+    console.log(weekNumber);
     try {
       const weekShifts = await getWeek(startDate, endDate, user);
       if (weekShifts) {

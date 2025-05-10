@@ -131,7 +131,7 @@ export default function CreateShfit() {
 
     // create an newShift object to update database
     const newShift = {
-      shift_date: new Date(formData.date),
+      shift_date: formData.date,
       enter: enterTimestamp,
       exit: exitTimestamp,
       regular_hours: total.regular,
