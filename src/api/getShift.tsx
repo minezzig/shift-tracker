@@ -3,7 +3,7 @@ import { supabase } from "../utilities/supabaseClient";
 
 export default async function getShiftById(id: string, user: User) {
   let { data: shift, error } = await supabase
-    .from("test")
+    .from("shifts")
     .select("*")
     .eq("id", id)
     .eq("user_id", user.id)

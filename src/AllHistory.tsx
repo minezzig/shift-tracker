@@ -25,7 +25,8 @@ export default function AllHistory() {
   useEffect(() => {
     if (user) {
       async function fetchShifts() {
-        const data = await getShifts(user);
+        let data = await getShifts(user);
+        data = data.reverse();
         setShifts(data ?? []);
       }
       fetchShifts();
@@ -69,6 +70,7 @@ export default function AllHistory() {
               {new Date(shift.shift_date).toLocaleDateString("es-ES", {
                 day: "2-digit",
                 month: "2-digit",
+                year:"2-digit"
               })}
             </div>
             <div className="border p-1">{formatTime(shift.enter)}</div>

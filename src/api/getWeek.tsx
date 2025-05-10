@@ -4,7 +4,7 @@ import { supabase } from "../utilities/supabaseClient";
 export async function getWeek(startDate: string, endDate: string, user: User) {
   try {
     const { data, error } = await supabase
-      .from("test")
+      .from("shifts")
       .select("*")
       .eq("user_id", user.id)
       .gte("shift_date", startDate)

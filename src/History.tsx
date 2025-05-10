@@ -6,7 +6,7 @@ import { weekDays } from "./utilities/days-months";
 import { Eclipse, Moon, Plus, Sun } from "lucide-react";
 import { getWeek } from "./api/getWeek";
 import { getShiftsByDate } from "./api/getShiftsByDate";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useUser } from "./UserContext";
 
 type Shift = {
@@ -22,7 +22,7 @@ type Shift = {
 
 export default function History() {
   const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
-  const [view, setView] = useState<"week" | "day" | "">("week");
+  const [view, setView] = useState<"week" | "day" | "">("");
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -91,7 +91,7 @@ export default function History() {
   return (
     <div className="flex flex-col items-center">
       <h1>History</h1>
-      <Link to="/history/all">ALl history </Link>
+      <button onClick={() => navigate("/history/all")} className="cursor-pointer transition hover:bg-green-400 p-2 rounded-xl bg-green-300" type="button">View All shifts</button>
       <div className="">
         <Calendar
           onChange={handleClickDay}

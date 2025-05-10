@@ -14,7 +14,7 @@ interface NewShiftType {
 export default async function addShift(newShift: NewShiftType) {
   try {
     const { data, error } = await supabase
-      .from("test")
+      .from("shifts")
       .insert(newShift)
       .select();
 
