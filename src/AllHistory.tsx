@@ -26,7 +26,8 @@ export default function AllHistory() {
     if (user) {
       async function fetchShifts() {
         const data = await getShifts(user);
-        setShifts(data?.reverse() ?? []);
+        const sortedData = data?.sort((a,b) => new Date(a.shift_date) > new Date(b.shift_date) ? -1 : 1);
+        setShifts(sortedData ?? []);
       }
       fetchShifts();
     }
